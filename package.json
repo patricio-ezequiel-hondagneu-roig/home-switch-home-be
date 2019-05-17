@@ -5,7 +5,7 @@
 	"scripts": {
 		"ejecutar server": "ts-node -r tsconfig-paths/register src/main.ts",
 		"instalar dependencias": "npm install",
-		"lint": "tslint -p tsconfig.json -c tslint.json",
+		"linter": "tslint --fix -p tsconfig.json -c tslint.json",
 		"pruebas unitarias": "jest",
 		"pruebas e2e": "jest --config ./test/jest-e2e.json",
 		"linter + pruebas unitarias + pruebas e2e": "tslint -p tsconfig.json -c tslint.json && jest && jest --config ./test/jest-e2e.json"
@@ -19,19 +19,18 @@
 		"rxjs": "^6.3.3"
 	},
 	"devDependencies": {
+		"@nestjs/testing": "^6.0.0",
 		"@types/express": "^4.16.0",
 		"@types/jest": "^23.3.13",
 		"@types/node": "^10.12.18",
 		"@types/supertest": "^2.0.7",
-		"@nestjs/testing": "^6.0.0",
 		"jest": "^23.6.0",
 		"nodemon": "^1.18.9",
-		"prettier": "^1.15.3",
 		"supertest": "^3.4.1",
 		"ts-jest": "^23.10.5",
 		"ts-node": "^7.0.1",
 		"tsconfig-paths": "^3.7.0",
-		"tslint": "5.12.1",
+		"tslint": "^5.16.0",
 		"typescript": "^3.2.4"
 	},
 	"jest": {
