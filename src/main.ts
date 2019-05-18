@@ -18,6 +18,7 @@ const puerto = 3000;
 async function bootstrap( ) {
 	const app = await NestFactory.create( AppModule );
 	app.use( logger );
+	app.enableCors();
 	await app.listen( puerto, anunciar );
 }
 
