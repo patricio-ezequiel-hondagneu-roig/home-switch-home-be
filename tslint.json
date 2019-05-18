@@ -127,7 +127,6 @@
 			true,
 			"never-prefix"
 		],
-		"interface-over-type-literal": true,
 		"no-boolean-literal-compare": true,
 		"no-parameter-properties": false,
 		"object-literal-key-quotes": [
