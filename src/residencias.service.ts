@@ -33,11 +33,11 @@ export class ResidenciasService {
 	}
 
 	/**
-	 * Crea una nueva residencia y retorna su identificador.
+	 * Crea una nueva residencia y la retorna.
 	 *
 	 * @param residenciaParaCrear objeto con las propiedades necesarias para crear una residencia
 	 */
-	public crear( residenciaParaCrear: ResidenciaParaCrear ): string {
+	public crear( residenciaParaCrear: ResidenciaParaCrear ): Residencia {
 		const residencia: Residencia = {
 			idResidencia: this._siguienteIdResidencia.toString( ),
 			...residenciaParaCrear
@@ -48,7 +48,7 @@ export class ResidenciasService {
 		this._residencias.push( residencia );
 		this._siguienteIdResidencia++;
 
-		return residencia.idResidencia;
+		return residencia;
 	}
 
 	/**

@@ -40,14 +40,14 @@ export class ResidenciasController {
 	/**
 	 * Método que procesa las peticiones HTTP con método **POST** al endpoint /residencias.
 	 *
-	 * Crea una residencia nueva según el cuerpo de la petición y retorna su identificador.
+	 * Crea una residencia nueva según el cuerpo de la petición y la retorna.
 	 *
 	 * @param peticion petición HTTP recibida
 	 */
 	@Post( '/' )
 	public crearResidencia(
 		@Req( ) peticion: Request
-	): string {
+	): Residencia {
 		return this.residenciasService.crear( peticion.body );
 	}
 
