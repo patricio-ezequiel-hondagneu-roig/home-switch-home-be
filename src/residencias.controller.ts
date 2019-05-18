@@ -55,7 +55,7 @@ export class ResidenciasController {
 	 * Método que procesa las peticiones HTTP con método **PUT** al endpoint /residencias/_:idResidencia_, donde
 	 * _:idResidencia_ se mapea al parámetro `idResidencia`.
 	 *
-	 * Modifica la residencia con el identificador provisto, si existe, o falla en caso contrario.
+	 * Modifica la residencia con el identificador provisto y la retorna, si existe, o falla en caso contrario.
 	 *
 	 * @param idResidencia identificador de la residencia a modificar
 	 * @param peticion petición HTTP recibida
@@ -64,8 +64,8 @@ export class ResidenciasController {
 	public modificarResidencia(
 		@Param( 'idResidencia' ) idResidencia: string,
 		@Req( ) peticion: Request
-	): void {
-		this.residenciasService.modificar( idResidencia, peticion.body );
+	): Residencia {
+		return this.residenciasService.modificar( idResidencia, peticion.body );
 	}
 
 	/**

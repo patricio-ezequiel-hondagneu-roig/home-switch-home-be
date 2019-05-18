@@ -52,12 +52,12 @@ export class ResidenciasService {
 	}
 
 	/**
-	 * Modifica la residencia con el identificador provisto, si existe, o falla en caso contrario.
+	 * Modifica la residencia con el identificador provisto y la retorna, si existe, o falla en caso contrario.
 	 *
 	 * @param idResidencia identificador de la residencia a modificar
 	 * @param residenciaParaModificar objeto con las propiedades necesarias para modificar una residencia
 	 */
-	public modificar( idResidencia: string, residenciaParaModificar: ResidenciaParaModificar ): void {
+	public modificar( idResidencia: string, residenciaParaModificar: ResidenciaParaModificar ): Residencia {
 		let residencia: Residencia = this.obtenerPorId( idResidencia );
 
 		if ( residencia === null ) {
@@ -74,6 +74,8 @@ export class ResidenciasService {
 				? residencia
 				: _residenciaActual;
 		});
+
+		return residencia;
 	}
 
 	/**
