@@ -95,4 +95,17 @@ export class SubastasService {
 		this._subastas.splice( indiceDeSubasta, 1 );
 	}
 
+	/**
+	 * Retorna las subastas con el ID de residencia indicado.
+	 *
+	 * @param idResidencia ID de la residencia buscada
+	 */
+	public obtenerPorIdDeResidencia( idResidencia: string ): Subasta[ ] {
+		const subastasEncontradas: Subasta[ ] = this._subastas.filter( ( subasta ) => {
+			return subasta.idResidencia === idResidencia;
+		});
+
+		return subastasEncontradas;
+	}
+
 }
