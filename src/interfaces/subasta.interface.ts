@@ -6,7 +6,7 @@ export interface Subasta {
 	fechaDeInicio: string;
 	fechaDeFin: string;
 	montoInicial: number;
-	// ofertas: Oferta[]
+	ofertas: String[];
 }
 
 export type SubastaParaCrear = RemoverPropiedades<Subasta, 'idSubasta'>;
