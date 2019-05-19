@@ -25,7 +25,7 @@ export class ResidenciasService {
 	}
 
 	/**
-	 * Retorna la residencia con el identificador provisto, si existe, o _null_ en caso contrario.
+	 * Retorna la residencia con el identificador provisto, si existe, o falla en caso contrario.
 	 *
 	 * @param idResidencia identificador de la residencia buscada
 	 */
@@ -34,9 +34,12 @@ export class ResidenciasService {
 			return residencia.idResidencia === idResidencia;
 		});
 
-		return ( residenciaEncontrada !== undefined )
-			? residenciaEncontrada
-			: null;
+		if ( residenciaEncontrada !== undefined ) {
+			return residenciaEncontrada;
+		}
+		else {
+			throw new NotFoundException( `No existen residencias con idResidencia "${ idResidencia }".` );
+		}
 	}
 
 	/**
@@ -47,7 +50,7 @@ export class ResidenciasService {
 	 * @param residenciaParaCrear objeto con las propiedades necesarias para crear una residencia
 	 */
 	public crear( residenciaParaCrear: ResidenciaParaCrear ): Residencia {
-		if ( this.obtenerPorUbicacion( residenciaParaCrear ) !== null ) {
+		if ( this.obtenerPorUbicacion( residenciaParaCrear ).length > 0 ) {
 			throw new UnprocessableEntityException(
 				`No se puede crear la residencia porque ya existe otra con la ubicación indicada.`,
 			);
@@ -73,32 +76,34 @@ export class ResidenciasService {
 	 * @param residenciaParaModificar objeto con las propiedades necesarias para modificar una residencia
 	 */
 	public modificar( idResidencia: string, residenciaParaModificar: ResidenciaParaModificar ): Residencia {
-		const residenciaConMismaUbicacion: Residencia = this.obtenerPorUbicacion( residenciaParaModificar );
-
-		if ( residenciaConMismaUbicacion !== null && residenciaConMismaUbicacion.idResidencia !== idResidencia ) {
-			throw new UnprocessableEntityException(
-				`No se puede modificar la residencia porque ya existe otra con la ubicación indicada.`,
-			);
-		}
-
-		let residencia: Residencia = this.obtenerPorId( idResidencia );
+		const residencia: Residencia = this.obtenerPorId( idResidencia );
 
 		if ( residencia === null ) {
 			throw new NotFoundException( `No existe residencia con idResidencia "${ idResidencia }".` );
 		}
 
-		residencia = {
+		const otrasResidenciasConMismaUbicacion: Residencia[ ] = this
+			.obtenerPorUbicacion( residenciaParaModificar )
+			.filter( ( _residencia ) => _residencia.idResidencia !== idResidencia );
+
+		if ( otrasResidenciasConMismaUbicacion.length > 0 ) {
+			throw new UnprocessableEntityException(
+				`No se puede modificar la residencia porque ya existe otra con la ubicación indicada.`,
+			);
+		}
+
+		const residenciaModificada = {
 			...residencia,
 			...residenciaParaModificar
 		};
 
 		this._residencias = this._residencias.map( ( _residenciaActual ) => {
-			return ( _residenciaActual.idResidencia === residencia.idResidencia )
-				? residencia
+			return ( _residenciaActual.idResidencia === residenciaModificada.idResidencia )
+				? residenciaModificada
 				: _residenciaActual;
 		});
 
-		return residencia;
+		return residenciaModificada;
 	}
 
 	/**
@@ -115,7 +120,7 @@ export class ResidenciasService {
 			throw new NotFoundException( `No existe residencia con idResidencia "${ idResidencia }".` );
 		}
 
-		const subastasEncontradas: Subasta[ ] = this.subastasService.obtenerPorIdDeResidencia( idResidencia );
+		const subastasEncontradas: Subasta[ ] = this.subastasService.obtenerPorIdResidencia( idResidencia );
 
 		if ( subastasEncontradas.length > 0 ) {
 			throw new BadRequestException(
@@ -127,12 +132,12 @@ export class ResidenciasService {
 	}
 
 	/**
-	 * Retorna una residencia con la ubicación indicada, si existe, o _null_ en caso contrario.
+	 * Retorna las residencias con la ubicación indicada.
 	 *
 	 * @param ubicación objeto que contiene el país, la provincia, la localidad y el domicilio buscados
 	 */
-	public obtenerPorUbicacion( ubicación: UbicacionDeResidencia ): Residencia | null {
-		const residenciaEncontrada: Residencia = this._residencias.find( ( residencia ) => {
+	public obtenerPorUbicacion( ubicación: UbicacionDeResidencia ): Residencia[ ] {
+		const residenciasEncontradas: Residencia[ ] = this._residencias.filter( ( residencia ) => {
 			return (
 				residencia.pais      === ubicación.pais      &&
 				residencia.provincia === ubicación.provincia &&
@@ -141,9 +146,6 @@ export class ResidenciasService {
 			);
 		});
 
-		return ( residenciaEncontrada !== undefined )
-			? residenciaEncontrada
-			: null;
+		return residenciasEncontradas;
 	}
-
 }

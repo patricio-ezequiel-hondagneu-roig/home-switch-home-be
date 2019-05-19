@@ -18,7 +18,7 @@ export class SubastasService {
 	}
 
 	/**
-	 * Retorna la subastas con el identificador provisto, si existe, o _null_ en caso contrario.
+	 * Retorna la subastas con el identificador provisto, si existe, o falla en caso contrario.
 	 *
 	 * @param idSubasta identificador de la subasta buscada
 	 */
@@ -27,9 +27,12 @@ export class SubastasService {
 			return subasta.idSubasta === idSubasta;
 		});
 
-		return ( subastaEncontrada !== undefined )
-			? subastaEncontrada
-			: null;
+		if ( subastaEncontrada !== undefined ) {
+			return subastaEncontrada;
+		}
+		else {
+			throw new NotFoundException( `No existen subastas con idSubasta "${ idSubasta }".` );
+		}
 	}
 
 	/**
@@ -61,7 +64,7 @@ export class SubastasService {
 		let subasta: Subasta = this.obtenerPorId( idSubasta );
 
 		if ( subasta === null ) {
-			throw new NotFoundException( `No existe subasta con idSubasta "${ idSubasta }".` );
+			throw new NotFoundException( `No existen subastas con idSubasta "${ idSubasta }".` );
 		}
 
 		subasta = {
@@ -89,7 +92,7 @@ export class SubastasService {
 		});
 
 		if ( indiceDeSubasta === -1 ) {
-			throw new NotFoundException( `No existe subasta con idSubasta "${ idSubasta }".` );
+			throw new NotFoundException( `No existen subastas con idSubasta "${ idSubasta }".` );
 		}
 
 		this._subastas.splice( indiceDeSubasta, 1 );
@@ -100,7 +103,7 @@ export class SubastasService {
 	 *
 	 * @param idResidencia ID de la residencia buscada
 	 */
-	public obtenerPorIdDeResidencia( idResidencia: string ): Subasta[ ] {
+	public obtenerPorIdResidencia( idResidencia: string ): Subasta[ ] {
 		const subastasEncontradas: Subasta[ ] = this._subastas.filter( ( subasta ) => {
 			return subasta.idResidencia === idResidencia;
 		});
