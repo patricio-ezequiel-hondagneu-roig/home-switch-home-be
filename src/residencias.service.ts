@@ -1,5 +1,6 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { Residencia, ResidenciaParaCrear, ResidenciaParaModificar } from './interfaces/residencia.interface';
+import { UbicacionDeResidencia } from './interfaces/ubicacion-de-residencia.interface';
 
 // TODO: Eliminar mocks
 /**
@@ -35,15 +36,21 @@ export class ResidenciasService {
 	/**
 	 * Crea una nueva residencia y la retorna.
 	 *
+	 * Falla si la ubicación que se le desea asignar ya corresponde a otra residencia.
+	 *
 	 * @param residenciaParaCrear objeto con las propiedades necesarias para crear una residencia
 	 */
 	public crear( residenciaParaCrear: ResidenciaParaCrear ): Residencia {
+		if ( this.obtenerPorUbicacion( residenciaParaCrear ) !== null ) {
+			throw new UnprocessableEntityException(
+				`No se puede crear la residencia porque ya existe otra con la ubicación indicada.`,
+			);
+		}
+
 		const residencia: Residencia = {
 			idResidencia: this._siguienteIdResidencia.toString( ),
 			...residenciaParaCrear
 		};
-
-		// TODO: Fallar si existe una residencia con los mismos campos clave
 
 		this._residencias.push( residencia );
 		this._siguienteIdResidencia++;
@@ -54,10 +61,20 @@ export class ResidenciasService {
 	/**
 	 * Modifica la residencia con el identificador provisto y la retorna, si existe, o falla en caso contrario.
 	 *
+	 * Falla también si la ubicación que se le desea asignar ya corresponde a otra residencia.
+	 *
 	 * @param idResidencia identificador de la residencia a modificar
 	 * @param residenciaParaModificar objeto con las propiedades necesarias para modificar una residencia
 	 */
 	public modificar( idResidencia: string, residenciaParaModificar: ResidenciaParaModificar ): Residencia {
+		const residenciaConMismaUbicacion: Residencia = this.obtenerPorUbicacion( residenciaParaModificar );
+
+		if ( residenciaConMismaUbicacion !== null && residenciaConMismaUbicacion.idResidencia !== idResidencia ) {
+			throw new UnprocessableEntityException(
+				`No se puede modificar la residencia porque ya existe otra con la ubicación indicada.`,
+			);
+		}
+
 		let residencia: Residencia = this.obtenerPorId( idResidencia );
 
 		if ( residencia === null ) {
@@ -93,6 +110,26 @@ export class ResidenciasService {
 		}
 
 		this._residencias.splice( indiceDeResidencia, 1 );
+	}
+
+	/**
+	 * Retorna una residencia con la ubicación indicada, si existe, o _null_ en caso contrario.
+	 *
+	 * @param ubicación objeto que contiene el país, la provincia, la localidad y el domicilio buscados
+	 */
+	public obtenerPorUbicacion( ubicación: UbicacionDeResidencia ): Residencia | null {
+		const residenciaEncontrada: Residencia = this._residencias.find( ( residencia ) => {
+			return (
+				residencia.pais      === ubicación.pais      &&
+				residencia.provincia === ubicación.provincia &&
+				residencia.localidad === ubicación.localidad &&
+				residencia.domicilio === ubicación.domicilio
+			);
+		});
+
+		return ( residenciaEncontrada !== undefined )
+			? residenciaEncontrada
+			: null;
 	}
 
 }
