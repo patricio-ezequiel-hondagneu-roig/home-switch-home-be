@@ -9,6 +9,7 @@ export interface Residencia {
 	domicilio: string;
 	descripcion: string;
 	fotos: string[];
+	montoInicialDeSubasta: number;
 }
 
 export type ResidenciaParaCrear = RemoverPropiedades<Residencia, 'idResidencia'>;
