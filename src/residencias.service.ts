@@ -1,6 +1,8 @@
-import { Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnprocessableEntityException, BadRequestException } from '@nestjs/common';
 import { Residencia, ResidenciaParaCrear, ResidenciaParaModificar } from './interfaces/residencia.interface';
 import { UbicacionDeResidencia } from './interfaces/ubicacion-de-residencia.interface';
+import { SubastasService } from './subastas.service';
+import { Subasta } from './interfaces/subasta.interface';
 
 // TODO: Eliminar mocks
 /**
@@ -10,6 +12,10 @@ import { UbicacionDeResidencia } from './interfaces/ubicacion-de-residencia.inte
 export class ResidenciasService {
 	private _residencias: Residencia[ ] = [ ];
 	private _siguienteIdResidencia: number = 0;
+
+	public constructor(
+		private subastasService: SubastasService,
+	) { }
 
 	/**
 	 * Retorna todas las residencias.
@@ -107,6 +113,14 @@ export class ResidenciasService {
 
 		if ( indiceDeResidencia === -1 ) {
 			throw new NotFoundException( `No existe residencia con idResidencia "${ idResidencia }".` );
+		}
+
+		const subastasEncontradas: Subasta[ ] = this.subastasService.obtenerPorIdDeResidencia( idResidencia );
+
+		if ( subastasEncontradas.length > 0 ) {
+			throw new BadRequestException(
+				`No se puede eliminar la residencia porque tiene ${ subastasEncontradas.length } subastas asociadas.`
+			);
 		}
 
 		this._residencias.splice( indiceDeResidencia, 1 );
