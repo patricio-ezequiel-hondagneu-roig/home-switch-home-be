@@ -43,7 +43,8 @@ export class SubastasService {
 	public crear( subastaParaCrear: SubastaParaCrear ): Subasta {
 		const subasta: Subasta = {
 			idSubasta: this._siguienteIdSubasta.toString( ),
-			...subastaParaCrear
+			...subastaParaCrear,
+			ofertas: [ ]
 		};
 
 		// TODO: Fallar si existe una subasta con los mismos campos clave
