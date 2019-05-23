@@ -1,12 +1,12 @@
 import { RemoverPropiedades } from 'src/typings/remover-propiedades';
-
+import { Oferta } from 'src/interfaces/ofertas.interface';
 export interface Subasta {
 	idSubasta: string;
 	idResidencia: string;
 	montoInicial: number;
 	fechaDeInicio: string;
 	fechaDeFin: string;
-	ofertas: string[];
+	ofertas: Oferta[];
 }
 
 export type SubastaParaCrear = RemoverPropiedades<Subasta, 'idSubasta' | 'ofertas'>;

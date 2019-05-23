@@ -2,7 +2,7 @@ import { Controller, Delete, Get, Param, Post, Put, Req } from '@nestjs/common';
 import { Request } from 'express';
 import { Subasta } from './interfaces/subasta.interface';
 import { SubastasService } from './subastas.service';
-
+import { Oferta } from './interfaces/ofertas.interface';
 /**
  * Controlador que procesa las peticiones HTTP al endpoint /subastas
  */
@@ -50,7 +50,14 @@ export class SubastasController {
 	): Subasta {
 		return this.subastasService.crear( peticion.body );
 	}
-
+	// Crea oferta en la subasta dada por :idSubasta*/
+	@Post( '/:idSubasta/ofertas' )
+	public crearOferta(
+		@Param( 'idSubasta' )idSubasta: string,
+		@Req() peticion: Request
+	): Oferta {
+		return this.subastasService.crearOferta(idSubasta, peticion.body );
+	}
 	/**
 	 * Método que procesa las peticiones HTTP con método **PUT** al endpoint /subastas/_:idSubasta_, donde
 	 * _:idSubasta_ se mapea al parámetro `idSubasta`.
