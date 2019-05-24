@@ -50,14 +50,24 @@ export class SubastasController {
 	): Subasta {
 		return this.subastasService.crear( peticion.body );
 	}
-	// Crea oferta en la subasta dada por :idSubasta*/
+
+	/**
+	 * Método que procesa las peticiones HTTP con el método **POST** al endpoint /subastas/_:idSubasta_/ofertas, donde
+	 * _:idSubasta_ se mapea al parámetro `idSubasta`.
+	 *
+	 * Crea una oferta para la subasta según el cuerpo de la petición y la retorna.
+	 *
+	 * @param idSubasta identificador de la subasta para la cual crear la oferta
+	 * @param peticion petición HTTP recibida
+	 */
 	@Post( '/:idSubasta/ofertas' )
 	public crearOferta(
-		@Param( 'idSubasta' )idSubasta: string,
-		@Req() peticion: Request
+		@Param( 'idSubasta' ) idSubasta: string,
+		@Req( ) peticion: Request
 	): Oferta {
-		return this.subastasService.crearOferta(idSubasta, peticion.body );
+		return this.subastasService.crearOferta( idSubasta, peticion.body );
 	}
+
 	/**
 	 * Método que procesa las peticiones HTTP con método **PUT** al endpoint /subastas/_:idSubasta_, donde
 	 * _:idSubasta_ se mapea al parámetro `idSubasta`.

@@ -1,16 +1,19 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Subasta, SubastaParaCrear, SubastaParaModificar,  } from './interfaces/subasta.interface';
 import { OfertaParaCrear , Oferta } from './interfaces/ofertas.interface';
+
 // TODO: Eliminar mocks
+
 /**
  * Servicio que administra las operaciones sobre subastas en la base de datos.
  */
 @Injectable( )
 export class SubastasService {
 	private _subastas: Subasta[ ] = [ ];
-	private _ofertas: Oferta [] = [];
+	private _ofertas: Oferta [ ] = [ ];
 	private _siguienteIdSubasta: number = 0;
 	private _siguienteIdOferta: number = 0;
+
 	/**
 	 * Retorna todas las subastas.
 	 */
@@ -56,39 +59,43 @@ export class SubastasService {
 		return subasta;
 	}
 
-	/** Crear oferta de una subasta con id asociada */
-	public crearOferta(idSubasta: string ,  ofertaParaCrear: OfertaParaCrear ): Oferta {
-		// genero una oferta completa para ingresar al sistema
+	/**
+	 * Crea una nueva oferta para la subasta con el identificador provisto y la retorna, si existe, o falla en caso
+	 * contrario.
+	 *
+	 * @param idSubasta identificador de la subasta para la cual crear la oferta
+	 * @param ofertaParaCrear objeto con las propiedades necesarias para crear la oferta
+	 */
+	public crearOferta( idSubasta: string, ofertaParaCrear: OfertaParaCrear ): Oferta {
 		const oferta: Oferta = {
 			idOferta: this._siguienteIdOferta.toString( ),
 			...ofertaParaCrear
 		};
 
-		// busco la subasta dueña de la oferta creada
 		const subastaEncontrada: Subasta = this._subastas.find( ( subasta ) => {
 			return subasta.idSubasta === idSubasta;
 		});
 
 		if ( subastaEncontrada !== undefined ) {
-			// Pusheo oferta nueva en arreglo de ofertas de todo el sistema
-			this._ofertas.push(oferta);
-			// Actualizo las ofertas de la subasta encontrada
-			subastaEncontrada.ofertas.push(oferta);
-			// Actualizo la subasta guardada en el las subastas del sistema
+			this._ofertas.push( oferta );
+			subastaEncontrada.ofertas.push( oferta );
+
+			// Reincorporar la subasta con la oferta agregada en la lista de subastas
 			this._subastas = this._subastas.map( ( _subastaActual ) => {
 				return ( _subastaActual.idSubasta === subastaEncontrada.idSubasta )
 					? subastaEncontrada
 					: _subastaActual;
 			});
-			// se incremenda id de ofertas a la espera de una nueva oferta
+
 			this._siguienteIdOferta++;
-			// retorno la oferta guardada
+
 			return oferta;
 		}
 		else {
 			throw new NotFoundException( `No existen subastas con idSubasta "${ idSubasta }".` );
 		}
 	}
+
 	/**
 	 * Modifica la subasta con el identificador provisto y la retorna, si existe, o falla en caso contrario.
 	 *
