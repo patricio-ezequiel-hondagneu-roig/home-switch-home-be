@@ -1,8 +1,8 @@
 import { Controller, Delete, Get, Param, Post, Put, Req } from '@nestjs/common';
 import { Request } from 'express';
+import { Oferta } from './interfaces/ofertas.interface';
 import { Subasta } from './interfaces/subasta.interface';
 import { SubastasService } from './subastas.service';
-import { Oferta } from './interfaces/ofertas.interface';
 /**
  * Controlador que procesa las peticiones HTTP al endpoint /subastas
  */

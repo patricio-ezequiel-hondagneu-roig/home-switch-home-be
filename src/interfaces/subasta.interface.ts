@@ -1,5 +1,6 @@
 import { RemoverPropiedades } from 'src/typings/remover-propiedades';
 import { Oferta } from 'src/interfaces/ofertas.interface';
+
 export interface Subasta {
 	idSubasta: string;
 	idResidencia: string;

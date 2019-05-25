@@ -1,6 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, Inject, forwardRef, BadRequestException } from '@nestjs/common';
 import { Subasta, SubastaParaCrear, SubastaParaModificar,  } from './interfaces/subasta.interface';
 import { OfertaParaCrear , Oferta } from './interfaces/ofertas.interface';
+import { ResidenciasService } from './residencias.service';
+import { Residencia } from './interfaces/residencia.interface';
 
 // TODO: Eliminar mocks
 
@@ -10,9 +12,15 @@ import { OfertaParaCrear , Oferta } from './interfaces/ofertas.interface';
 @Injectable( )
 export class SubastasService {
 	private _subastas: Subasta[ ] = [ ];
-	private _ofertas: Oferta [ ] = [ ];
+	private _ofertas: Oferta[ ] = [ ];
 	private _siguienteIdSubasta: number = 0;
 	private _siguienteIdOferta: number = 0;
+
+	public constructor(
+		// Resuelve dependencias circulares (https://docs.nestjs.com/fundamentals/circular-dependency)
+		@Inject( forwardRef( ( ) => ResidenciasService ) )
+		private readonly residenciasService: ResidenciasService,
+	) { }
 
 	/**
 	 * Retorna todas las subastas.
@@ -42,9 +50,21 @@ export class SubastasService {
 	/**
 	 * Crea una nueva subasta y la retorna.
 	 *
+	 * Falla si el monto inicial de la subasta es inferior al permitido para la residencia asociada.
+	 *
 	 * @param subastaParaCrear objeto con las propiedades necesarias para crear una subasta
 	 */
 	public crear( subastaParaCrear: SubastaParaCrear ): Subasta {
+		const residencia: Residencia = this.residenciasService.obtenerPorId( subastaParaCrear.idResidencia );
+
+		if ( subastaParaCrear.montoInicial < residencia.montoInicialDeSubasta ) {
+			throw new BadRequestException(
+				`No se puede crear la subasta porque el monto inicial provisto ` +
+				`(${ subastaParaCrear.montoInicial }) es inferior al monto mínimo ` +
+				`permitido (${ residencia.montoInicialDeSubasta }).`
+			);
+		}
+
 		const subasta: Subasta = {
 			idSubasta: this._siguienteIdSubasta.toString( ),
 			...subastaParaCrear,
@@ -99,14 +119,21 @@ export class SubastasService {
 	/**
 	 * Modifica la subasta con el identificador provisto y la retorna, si existe, o falla en caso contrario.
 	 *
+	 * Falla si el monto inicial de la subasta es inferior al permitido para la residencia asociada.
+	 *
 	 * @param idSubasta identificador de la subasta a modificar
 	 * @param subastaParaModificar objeto con las propiedades necesarias para modificar una subasta
 	 */
 	public modificar( idSubasta: string, subastaParaModificar: SubastaParaModificar ): Subasta {
 		let subasta: Subasta = this.obtenerPorId( idSubasta );
+		const residencia: Residencia = this.residenciasService.obtenerPorId( subasta.idResidencia );
 
-		if ( subasta === null ) {
-			throw new NotFoundException( `No existen subastas con idSubasta "${ idSubasta }".` );
+		if ( subastaParaModificar.montoInicial < residencia.montoInicialDeSubasta ) {
+			throw new BadRequestException(
+				`No se puede modificar la subasta porque el monto inicial provisto ` +
+				`(${ subastaParaModificar.montoInicial }) es inferior al monto mínimo ` +
+				`permitido (${ residencia.montoInicialDeSubasta }).`
+			);
 		}
 
 		subasta = {

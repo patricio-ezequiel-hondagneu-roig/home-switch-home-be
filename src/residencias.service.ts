@@ -1,8 +1,8 @@
-import { Injectable, NotFoundException, UnprocessableEntityException, BadRequestException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnprocessableEntityException, Inject, forwardRef } from '@nestjs/common';
 import { Residencia, ResidenciaParaCrear, ResidenciaParaModificar } from './interfaces/residencia.interface';
+import { Subasta } from './interfaces/subasta.interface';
 import { UbicacionDeResidencia } from './interfaces/ubicacion-de-residencia.interface';
 import { SubastasService } from './subastas.service';
-import { Subasta } from './interfaces/subasta.interface';
 
 // TODO: Eliminar mocks
 /**
@@ -14,7 +14,9 @@ export class ResidenciasService {
 	private _siguienteIdResidencia: number = 0;
 
 	public constructor(
-		private subastasService: SubastasService,
+		// Resuelve dependencias circulares (https://docs.nestjs.com/fundamentals/circular-dependency)
+		@Inject( forwardRef( ( ) => SubastasService ) )
+		private readonly subastasService: SubastasService,
 	) { }
 
 	/**
@@ -77,10 +79,6 @@ export class ResidenciasService {
 	 */
 	public modificar( idResidencia: string, residenciaParaModificar: ResidenciaParaModificar ): Residencia {
 		const residencia: Residencia = this.obtenerPorId( idResidencia );
-
-		if ( residencia === null ) {
-			throw new NotFoundException( `No existe residencia con idResidencia "${ idResidencia }".` );
-		}
 
 		const otrasResidenciasConMismaUbicacion: Residencia[ ] = this
 			.obtenerPorUbicacion( residenciaParaModificar )
