@@ -1,8 +1,10 @@
-import { Controller, Delete, Get, Param, Post, Put, Req } from '@nestjs/common';
+// import { Controller, Delete, Get, Param, Post, Put, Req } from '@nestjs/common';
+import { Controller, Delete, Get,  Param, Post, Put, Req, Res, HttpStatus , NotFoundException, Body, Query } from '@nestjs/common';
 import { Request } from 'express';
 import { Residencia } from './interfaces/residencia.interface';
 import { ResidenciasService } from './residencias.service';
-
+import { ValidateObjectId } from './validadores/validate-object-id';
+import { CrearResidenciaDTO } from './dto/crearResidencia.dto';
 /**
  * Controlador que procesa las peticiones HTTP al endpoint /residencias
  */
@@ -18,8 +20,9 @@ export class ResidenciasController {
 	 * Retorna una lista con todas las residencias.
 	 */
 	@Get( '/' )
-	public obtenerTodasLasResidencias( ): Residencia[ ] {
-		return this.residenciasService.obtenerTodas( );
+	public async getResidencias(@Res() res) {
+		const residencias = await this.residenciasService.obtenerTodas();
+		return res.status(HttpStatus.OK).json(residencias);
 	}
 
 	/**
@@ -31,10 +34,11 @@ export class ResidenciasController {
 	 * @param idResidencia identificador de la residencia buscada
 	 */
 	@Get( '/:idResidencia' )
-	public obtenerResidencia(
-		@Param( 'idResidencia' ) idResidencia: string
-	): Residencia {
-		return this.residenciasService.obtenerPorId( idResidencia );
+	public async getResidencia(@Res() res, @Param('idResidencia', new ValidateObjectId())idResidencia) {
+		const residencia = await this.residenciasService.obtenerPorId(idResidencia);
+		if (!residencia) { throw new NotFoundException('Post does not exist!');
+		}
+		return res.status(HttpStatus.OK).json(residencia);
 	}
 
 	/**
@@ -45,10 +49,12 @@ export class ResidenciasController {
 	 * @param peticion petición HTTP recibida
 	 */
 	@Post( '/' )
-	public crearResidencia(
-		@Req( ) peticion: Request
-	): Residencia {
-		return this.residenciasService.crear( peticion.body );
+	public async agregarResidencia(@Res() res, @Body() residenciaCreadaDTO: CrearResidenciaDTO) {
+		const nuevaResidencia = await this.residenciasService.crear(residenciaCreadaDTO);
+		return res.status(HttpStatus.OK).json({
+			message: 'La residencia se cargo satisfactoriamente!',
+			post: nuevaResidencia
+		});
 	}
 
 	/**
@@ -61,11 +67,17 @@ export class ResidenciasController {
 	 * @param peticion petición HTTP recibida
 	 */
 	@Put( '/:idResidencia' )
-	public modificarResidencia(
-		@Param( 'idResidencia' ) idResidencia: string,
-		@Req( ) peticion: Request
-	): Residencia {
-		return this.residenciasService.modificar( idResidencia, peticion.body );
+	public async editarResidencia(
+		@Res() res,
+		@Query('idResidencia', new ValidateObjectId()) idResidencia,
+		@Body() residenciaCreadaDTO: CrearResidenciaDTO
+	) {
+		const residenciaEditada = await this.residenciasService.modificar(idResidencia, residenciaCreadaDTO);
+		if (!residenciaEditada) { throw new NotFoundException('La residencia no existe!'); }
+		return res.status(HttpStatus.OK).json({
+			message: 'La residencia se ha actualizado correctamente.',
+			post: residenciaEditada
+		});
 	}
 
 	/**
@@ -77,10 +89,13 @@ export class ResidenciasController {
 	 * @param idResidencia identificador de la residencia a modificar
 	 */
 	@Delete( '/:idResidencia' )
-	public eliminarResidencia(
-		@Param( 'idResidencia' ) idResidencia: string
-	): void {
-		this.residenciasService.eliminar( idResidencia );
+	public async borrarResidencia(@Res() res, @Query('idResidencia', new ValidateObjectId()) idResidencia) {
+		const residenciaEliminada = await this.residenciasService.eliminar(idResidencia);
+		if (!residenciaEliminada){ throw new NotFoundException('Post does not exist!'); }
+		return res.status(HttpStatus.OK).json({
+			message: 'Post has been deleted!',
+			post: residenciaEliminada
+		})
 	}
 
 }

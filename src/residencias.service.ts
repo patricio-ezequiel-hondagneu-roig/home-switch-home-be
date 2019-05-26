@@ -1,8 +1,13 @@
-import { BadRequestException, Injectable, NotFoundException, UnprocessableEntityException, Inject, forwardRef } from '@nestjs/common';
-import { Residencia, ResidenciaParaCrear, ResidenciaParaModificar } from './interfaces/residencia.interface';
-import { Subasta } from './interfaces/subasta.interface';
-import { UbicacionDeResidencia } from './interfaces/ubicacion-de-residencia.interface';
+import { Injectable, NotFoundException, Inject, forwardRef } from '@nestjs/common';
 import { SubastasService } from './subastas.service';
+// interfaces
+import { Residencia } from './interfaces/residencia.interface';
+import { UbicacionDeResidencia } from './interfaces/ubicacion-de-residencia.interface';
+// dto: data transfer object
+import { CrearResidenciaDTO } from './dto/crearResidencia.dto';
+// mongoose
+import { Model } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
 
 // TODO: Eliminar mocks
 /**
@@ -10,20 +15,20 @@ import { SubastasService } from './subastas.service';
  */
 @Injectable( )
 export class ResidenciasService {
-	private _residencias: Residencia[ ] = [ ];
-	private _siguienteIdResidencia: number = 0;
-
+	public _residencias: Residencia[] = [];
 	public constructor(
 		// Resuelve dependencias circulares (https://docs.nestjs.com/fundamentals/circular-dependency)
 		@Inject( forwardRef( ( ) => SubastasService ) )
 		private readonly subastasService: SubastasService,
+		@InjectModel('Residencia') private readonly residenciaModel: Model<Residencia>
 	) { }
 
 	/**
 	 * Retorna todas las residencias.
 	 */
-	public obtenerTodas( ): Residencia[ ] {
-		return this._residencias;
+	public async obtenerTodas( ): Promise<Residencia[ ]> {
+		const residencias = await this.residenciaModel.find().exec();
+		return residencias;
 	}
 
 	/**
@@ -31,13 +36,12 @@ export class ResidenciasService {
 	 *
 	 * @param idResidencia identificador de la residencia buscada
 	 */
-	public obtenerPorId( idResidencia: string ): Residencia {
-		const residenciaEncontrada: Residencia = this._residencias.find( ( residencia ) => {
-			return residencia.idResidencia === idResidencia;
-		});
-
-		if ( residenciaEncontrada !== undefined ) {
-			return residenciaEncontrada;
+	public async obtenerPorId( idResidencia: string ): Promise<Residencia> {
+		const residencia = await this.residenciaModel
+			.findById(idResidencia)
+			.exec();
+		if ( residencia !== undefined ) {
+			return residencia;
 		}
 		else {
 			throw new NotFoundException( `No existen residencias con idResidencia "${ idResidencia }".` );
@@ -51,22 +55,9 @@ export class ResidenciasService {
 	 *
 	 * @param residenciaParaCrear objeto con las propiedades necesarias para crear una residencia
 	 */
-	public crear( residenciaParaCrear: ResidenciaParaCrear ): Residencia {
-		if ( this.obtenerPorUbicacion( residenciaParaCrear ).length > 0 ) {
-			throw new UnprocessableEntityException(
-				`No se puede crear la residencia porque ya existe otra con la ubicación indicada.`,
-			);
-		}
-
-		const residencia: Residencia = {
-			idResidencia: this._siguienteIdResidencia.toString( ),
-			...residenciaParaCrear
-		};
-
-		this._residencias.push( residencia );
-		this._siguienteIdResidencia++;
-
-		return residencia;
+	public async crear( crearResidenciaDTO: CrearResidenciaDTO ): Promise<Residencia> {
+		const nuevaResidencia = await this.residenciaModel(crearResidenciaDTO);
+		return nuevaResidencia.save();
 	}
 
 	/**
@@ -77,30 +68,9 @@ export class ResidenciasService {
 	 * @param idResidencia identificador de la residencia a modificar
 	 * @param residenciaParaModificar objeto con las propiedades necesarias para modificar una residencia
 	 */
-	public modificar( idResidencia: string, residenciaParaModificar: ResidenciaParaModificar ): Residencia {
-		const residencia: Residencia = this.obtenerPorId( idResidencia );
-
-		const otrasResidenciasConMismaUbicacion: Residencia[ ] = this
-			.obtenerPorUbicacion( residenciaParaModificar )
-			.filter( ( _residencia ) => _residencia.idResidencia !== idResidencia );
-
-		if ( otrasResidenciasConMismaUbicacion.length > 0 ) {
-			throw new UnprocessableEntityException(
-				`No se puede modificar la residencia porque ya existe otra con la ubicación indicada.`,
-			);
-		}
-
-		const residenciaModificada = {
-			...residencia,
-			...residenciaParaModificar
-		};
-
-		this._residencias = this._residencias.map( ( _residenciaActual ) => {
-			return ( _residenciaActual.idResidencia === residenciaModificada.idResidencia )
-				? residenciaModificada
-				: _residenciaActual;
-		});
-
+	public async modificar( idResidencia: string, crearResidenciaDTO: CrearResidenciaDTO ): Promise<Residencia> {
+		const residenciaModificada = await this.residenciaModel
+			.findByIdAndUpdate(idResidencia, crearResidenciaDTO, { new: true });
 		return residenciaModificada;
 	}
 
@@ -109,24 +79,10 @@ export class ResidenciasService {
 	 *
 	 * @param idResidencia identificador de la residencia a eliminar
 	 */
-	public eliminar( idResidencia: string ): void {
-		const indiceDeResidencia: number = this._residencias.findIndex( ( residencia ) => {
-			return residencia.idResidencia === idResidencia;
-		});
-
-		if ( indiceDeResidencia === -1 ) {
-			throw new NotFoundException( `No existe residencia con idResidencia "${ idResidencia }".` );
-		}
-
-		const subastasEncontradas: Subasta[ ] = this.subastasService.obtenerPorIdResidencia( idResidencia );
-
-		if ( subastasEncontradas.length > 0 ) {
-			throw new BadRequestException(
-				`No se puede eliminar la residencia porque tiene ${ subastasEncontradas.length } subastas asociadas.`
-			);
-		}
-
-		this._residencias.splice( indiceDeResidencia, 1 );
+	public async eliminar( idResidencia: string ): Promise<Residencia>  {
+		const residenciaEliminada = await this.residenciaModel
+			.findByIdAndRemove(idResidencia);
+		return residenciaEliminada;
 	}
 
 	/**
