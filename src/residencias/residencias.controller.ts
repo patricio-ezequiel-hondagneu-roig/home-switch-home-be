@@ -58,7 +58,7 @@ export class ResidenciasController {
 		@Res( ) respuesta: Response,
 		@Param( 'idResidencia', new ObjectIdPipe( ) ) idResidencia: Types.ObjectId
 	): Promise<Response> {
-		const residenciaEliminada: Residencia = await this.residenciasService.eliminar( idResidencia );
+		const residenciaEliminada: Residencia | null = await this.residenciasService.eliminar( idResidencia );
 
 		if ( residenciaEliminada === null ) {
 			return respuesta.status( HttpStatus.NO_CONTENT ).json( null );

@@ -58,7 +58,7 @@ export class SubastasController {
 		@Res( ) respuesta: Response,
 		@Param( 'idSubasta', new ObjectIdPipe( ) ) idSubasta: Types.ObjectId
 	): Promise<Response> {
-		const subastaEliminada: Subasta = await this.subastasService.eliminar( idSubasta );
+		const subastaEliminada: Subasta | null = await this.subastasService.eliminar( idSubasta );
 
 		if ( subastaEliminada === null ) {
 			return respuesta.status( HttpStatus.NO_CONTENT ).json( null );

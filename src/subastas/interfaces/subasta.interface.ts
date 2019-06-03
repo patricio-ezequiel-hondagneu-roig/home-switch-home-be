@@ -1,8 +1,9 @@
 import { Document, Types } from 'mongoose';
 
 export interface Subasta extends Document {
-	idResidencia: Types.ObjectId;
-	montoInicial: number;
-	fechaDeInicio: string;
-	fechaDeFin: string;
+	readonly _id: Types.ObjectId;
+	readonly idResidencia: Types.ObjectId;
+	readonly montoInicial: number;
+	readonly fechaDeInicio: string;
+	readonly fechaDeFin: string;
 }

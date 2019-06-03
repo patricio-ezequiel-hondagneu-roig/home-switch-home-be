@@ -7,7 +7,9 @@ export const subastaSchema = new Schema({
 			validator: ( value: string ): boolean => {
 				return Types.ObjectId.isValid( value );
 			},
-			message: ({ value }) => `"${ value }" no es un valor válido para el campo idResidencia.`,
+			message: ( { value }: { value: string } ) => {
+				return `"${ value }" no es un valor válido para el campo idResidencia.`;
+			}
 		},
 		required: [ true, 'El campo idResidencia es requerido.' ],
 	},
