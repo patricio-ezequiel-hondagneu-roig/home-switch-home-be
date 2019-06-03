@@ -1,18 +1,15 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { ResidenciasController } from './residencias.controller';
-import { ResidenciasService } from './residencias.service';
-import { SubastasController } from './subastas.controller';
-import { SubastasService } from './subastas.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ResidenciaSchema } from './schemas/residencia.schema';
+import { OfertasModule } from './ofertas/ofertas.module';
+import { ResidenciasModule } from './residencias/residencias.module';
+import { SubastasModule } from './subastas/subastas.module';
+
 @Module({
 	imports: [
-		MongooseModule.forRoot('mongodb://localhost/home-switch-home', { useNewUrlParser: true }),
-		MongooseModule.forFeature([{ name: 'Residencia', schema: ResidenciaSchema }])
+		MongooseModule.forRoot( 'mongodb://localhost/home-switch-home', { useNewUrlParser: true } ),
+		ResidenciasModule,
+		SubastasModule,
+		OfertasModule
 	],
-	controllers: [ AppController, ResidenciasController, SubastasController ],
-	providers: [ AppService, ResidenciasService, SubastasService ],
 })
 export class AppModule { }
