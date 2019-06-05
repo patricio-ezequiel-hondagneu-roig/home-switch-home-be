@@ -25,4 +25,5 @@ export const subastaSchema = new Schema({
 		type: String,
 		required: [ true, 'El campo fechaDeFin es requerido.' ],
 	},
+	ofertas: [ String ],
 });

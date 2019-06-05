@@ -6,4 +6,5 @@ export interface Subasta extends Document {
 	readonly montoInicial: number;
 	readonly fechaDeInicio: string;
 	readonly fechaDeFin: string;
+	readonly ofertas: string[ ];
 }
