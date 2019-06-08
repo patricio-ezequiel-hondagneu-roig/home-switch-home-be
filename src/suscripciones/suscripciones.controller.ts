@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Res, Query, BadRequestException } from '@nestjs/common';
 import { Moment } from 'moment';
 import { Response } from 'express';
 import { Types } from 'mongoose';
@@ -17,8 +17,35 @@ export class SuscripcionesController {
 	@Get( '/' )
 	public async obtenerSuscripciones(
 		@Res( ) respuesta: Response,
+		@Query( 'plan' ) plan?: string,
+		@Query( 'ultima' ) ultima?: string
 	): Promise<Response> {
-		const suscripciones: Suscripcion[ ] = await this.suscripcionesService.obtenerTodas( );
+		// Nada mejor que unos if anidados
+		if (plan !== undefined && plan !== 'premium' && plan !== 'regular') {
+			throw new BadRequestException('No se reconoce el tipo de plan solicitado');
+		} else if (plan === undefined && ultima !== undefined) {
+			// Cuando el plan viene pero la ultima no viene
+			throw new BadRequestException('Falta indicar el plan');
+		}
+		let suscripciones: Suscripcion[ ];
+
+		if (plan === undefined && ultima === undefined) {
+			suscripciones = await this.suscripcionesService.obtenerTodas( );
+		} else if (plan === 'premium' && ultima === undefined) {
+			suscripciones = await this.suscripcionesService.obtenerSuscripcionesPremium( );
+		} else if (plan === 'regular' && ultima === undefined) {
+			suscripciones = await this.suscripcionesService.obtenerSuscripcionesRegular( );
+		} else if (plan === 'premium' && ultima !== undefined) {
+			const suscripcion: Suscripcion | null = await this.suscripcionesService.obtenerSuscripcionPremiumActual( );
+			return respuesta.status( HttpStatus.OK ).json( suscripcion );
+		} else if (plan === 'regular' && ultima !== undefined) {
+			const suscripcion: Suscripcion | null = await this.suscripcionesService.obtenerSuscripcionRegularActual( );
+			return respuesta.status( HttpStatus.OK ).json( suscripcion );
+		} else {
+			// Borrar
+			throw new Error();
+		}
+
 		return respuesta.status( HttpStatus.OK ).json( suscripciones );
 	}
 

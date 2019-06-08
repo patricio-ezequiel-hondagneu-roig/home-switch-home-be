@@ -1,10 +1,11 @@
-import { BadRequestException, forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, forwardRef, Inject, Injectable, NotFoundException, NotImplementedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { CrearSuscripcionDTO } from './dto/crear-suscripcion.dto';
 import { Suscripcion } from './interfaces/suscripcion.interface';
 import { ModuleRef } from '@nestjs/core';
 import { ObjectIdPipe } from 'src/helpers/validadores/ObjectIdPipe';
+import * as moment from 'moment';
 
 @Injectable( )
 export class SuscripcionesService {
@@ -16,6 +17,18 @@ export class SuscripcionesService {
 
 	public async obtenerTodas( ): Promise<Suscripcion[ ]> {
 		return this.suscripcionModel.find( ).exec( );
+	}
+
+	public async obtenerSuscripcionesPremium( ): Promise<Suscripcion[ ]> {
+		return this.suscripcionModel.find( { tipoDeSuscripcion: 'Premium' } ).exec( );
+	}
+
+	public async obtenerSuscripcionesRegular( ): Promise<Suscripcion[ ]> {
+		return this.suscripcionModel.find( { tipoDeSuscripcion: 'Regular' } ).exec( );
+	}
+
+	public async obtenerFechaMayor( ): Promise<Suscripcion[ ]> {
+		return this.suscripcionModel.find( { tipoDeSuscripcion: 'Regular' } ).exec( );
 	}
 
 	public async obtenerPorId( idSuscripcion: Types.ObjectId ): Promise<Suscripcion> {
@@ -36,6 +49,24 @@ export class SuscripcionesService {
 
 	public async eliminar( idSuscripcion: Types.ObjectId ): Promise<Suscripcion | null> {
 		return this.suscripcionModel.findByIdAndRemove( idSuscripcion ).exec( );
+	}
+
+	public async obtenerSuscripcionRegularActual(): Promise<Suscripcion | null> {
+		const suscripcionRegularActual = await this.suscripcionModel
+			.findOne( { tipoDeSuscripcion: 'Regular' } )
+			.sort('-fechaDeCreacion')
+			.exec();
+
+		return suscripcionRegularActual;
+	}
+
+	public async obtenerSuscripcionPremiumActual(): Promise<Suscripcion | null> {
+		const suscripcionPremiumActual = await this.suscripcionModel
+			.findOne( { tipoDeSuscripcion: 'Premium' } )
+			.sort('-fechaDeCreacion')
+			.exec();
+
+		return suscripcionPremiumActual;
 	}
 
 }
