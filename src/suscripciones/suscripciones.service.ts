@@ -43,7 +43,7 @@ export class SuscripcionesService {
 	}
 
 	public async agregar( crearSuscripcionDTO: CrearSuscripcionDTO ): Promise<Suscripcion> {
-		const suscripcionAgregada = new this.suscripcionModel( crearSuscripcionDTO ).save( );
+		const suscripcionAgregada = await new this.suscripcionModel( crearSuscripcionDTO ).save( );
 		return suscripcionAgregada;
 	}
 
