@@ -1,6 +1,6 @@
 import { Schema, Types } from 'mongoose';
 
-export const subastaSchema = new Schema({
+export const publicacionSchema = new Schema({
 	idResidencia: {
 		type: Schema.Types.ObjectId,
 		validate: {
@@ -10,16 +10,16 @@ export const subastaSchema = new Schema({
 		},
 		required: [ true, 'El campo idResidencia es requerido.' ],
 	},
-	montoInicial: {
-		type: Number,
-		required: [ true, 'El campo montoInicial es requerido.' ],
+	montoInicialDeSubasta: {
+		type: Schema.Types.Number,
+		required: [ true, 'El campo montoInicialDeSubasta es requerido.' ],
 	},
 	fechaDeInicio: {
-		type: String,
+		type: Schema.Types.String,
 		required: [ true, 'El campo fechaDeInicio es requerido.' ],
 	},
 	fechaDeFin: {
-		type: String,
+		type: Schema.Types.String,
 		required: [ true, 'El campo fechaDeFin es requerido.' ],
 	},
 });
