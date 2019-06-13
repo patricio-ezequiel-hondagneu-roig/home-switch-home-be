@@ -1,6 +1,5 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ResidenciasModule } from 'src/residencias/residencias.module';
 import { suscripcionSchema } from './schemas/suscripcion.schema';
 import { SuscripcionesController } from './suscripciones.controller';
 import { SuscripcionesService } from './suscripciones.service';

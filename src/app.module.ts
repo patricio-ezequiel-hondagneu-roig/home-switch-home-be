@@ -5,6 +5,7 @@ import { ResidenciasModule } from './residencias/residencias.module';
 import { SubastasModule } from './subastas/subastas.module';
 import { SuscripcionesModule } from './suscripciones/suscripciones.module';
 import { PublicacionesModule as PublicacionesModule } from './publicaciones/publicaciones.module';
+import { ClientesModule } from './clientes/clientes.module';
 
 @Module({
 	imports: [
@@ -13,7 +14,8 @@ import { PublicacionesModule as PublicacionesModule } from './publicaciones/publ
 		SubastasModule,
 		OfertasModule,
 		SuscripcionesModule,
-		PublicacionesModule
+		PublicacionesModule,
+		ClientesModule
 	],
 })
 export class AppModule { }
