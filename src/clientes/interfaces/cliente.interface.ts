@@ -14,11 +14,5 @@ export interface Cliente extends Document {
 	readonly tarjetaDeCredito: string;
 	readonly codigoDeSeguridad: string;
 	readonly fechaDeExpiracion: string;
-
 	readonly creditos: Credito[ ];
-
-	// readonly creditos: {
-	// 	fechaDeCreacion: string,
-	// 	activo: boolean
-	// }[ ];
 }

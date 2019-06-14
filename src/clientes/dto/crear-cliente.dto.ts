@@ -12,12 +12,5 @@ export class CrearClienteDTO {
 	public readonly tarjetaDeCredito!: string;
 	public readonly codigoDeSeguridad!: string;
 	public readonly fechaDeExpiracion!: string;
-
 	public readonly creditos!: Credito[ ];
-
-	// public readonly creditos!: {
-	// 	fechaDeCreacion: string,
-	// 	activo: boolean
-	// }[ ];
-
 }
