@@ -10,3 +10,5 @@ export class CrearAdquisicionDTO {
 // 	> 'Reserva Directa'
 // 	> 'Oferta'
 // 	> 'Hot Sale'
+
+// enum fijarse depsues

@@ -1,4 +1,5 @@
 import { Schema, Types } from 'mongoose';
+import { TipoDeAdquisicion } from './tipoDeAdquisicion.enum';
 
 export const adquisicionSchema = new Schema({
 	idCliente: {
@@ -30,5 +31,12 @@ export const adquisicionSchema = new Schema({
 	tipoDeSuscripcion: {
 		type:  String,
 		required: [ true, 'El campo tipoDeSuscripcion es requerido.' ],
+		validate: {
+			validator: ( value: string ): boolean => {
+				return ( value === TipoDeAdquisicion.ReservaDirecta ) ||
+				( value === TipoDeAdquisicion.Subasta ) ||
+				( value === TipoDeAdquisicion.HotSale );
+			}
+		},
 	},
 });

@@ -1,4 +1,5 @@
 import { Document, Types } from 'mongoose';
+import { TipoDeAdquisicion } from '../tipoDeAdquisicion.enum';
 
 export interface Adquisicion extends Document {
 	readonly _id: Types.ObjectId;
@@ -6,5 +7,5 @@ export interface Adquisicion extends Document {
 	readonly idPublicacion: string;
 	readonly monto: number;
 	readonly fechaDeCreacion: string;
-	readonly tipoDeAdquisicion: string;
+	readonly tipoDeAdquisicion: TipoDeAdquisicion;
 }
