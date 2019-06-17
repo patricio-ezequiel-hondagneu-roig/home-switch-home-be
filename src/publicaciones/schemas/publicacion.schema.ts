@@ -12,14 +12,19 @@ export const publicacionSchema = new Schema({
 	},
 	montoInicialDeSubasta: {
 		type: Schema.Types.Number,
+		validate: {
+			validator: ( value: number ): boolean => {
+				return value >= 0;
+			}
+		},
 		required: [ true, 'El campo montoInicialDeSubasta es requerido.' ],
 	},
-	fechaDeInicio: {
+	fechaDeInicioDeSemana: {
 		type: Schema.Types.String,
-		required: [ true, 'El campo fechaDeInicio es requerido.' ],
+		required: [ true, 'El campo fechaDeInicioDeSemana es requerido.' ],
 	},
-	fechaDeFin: {
-		type: Schema.Types.String,
-		required: [ true, 'El campo fechaDeFin es requerido.' ],
+	estaEnSubasta: {
+		type: Schema.Types.Boolean,
+		required: [ true, 'El campo estaEnSubasta es requerido.' ],
 	},
 });

@@ -1,12 +1,11 @@
 import { BadRequestException, forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
+import { ObjectIdPipe } from 'src/helpers/validadores/ObjectIdPipe';
 import { ResidenciasService } from '../residencias/residencias.service';
 import { CrearSubastaDTO } from './dto/crear-subasta.dto';
 import { ModificarSubastaDTO } from './dto/modificar-subasta.dto';
 import { Subasta } from './interfaces/subasta.interface';
-import { ModuleRef } from '@nestjs/core';
-import { ObjectIdPipe } from 'src/helpers/validadores/ObjectIdPipe';
 
 @Injectable( )
 export class SubastasService {
