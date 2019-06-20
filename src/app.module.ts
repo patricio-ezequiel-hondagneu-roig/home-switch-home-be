@@ -7,6 +7,7 @@ import { SuscripcionesModule } from './suscripciones/suscripciones.module';
 import { PublicacionesModule as PublicacionesModule } from './publicaciones/publicaciones.module';
 import { ClientesModule } from './clientes/clientes.module';
 import { SolicitudesModule } from './solicitudes/solicitudes.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
 	imports: [
@@ -17,7 +18,8 @@ import { SolicitudesModule } from './solicitudes/solicitudes.module';
 		SuscripcionesModule,
 		PublicacionesModule,
 		ClientesModule,
-		SolicitudesModule
+		SolicitudesModule,
+		AuthModule
 	],
 })
 export class AppModule { }

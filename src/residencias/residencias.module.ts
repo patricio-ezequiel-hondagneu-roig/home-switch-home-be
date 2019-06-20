@@ -4,6 +4,8 @@ import { SubastasModule } from 'src/subastas/subastas.module';
 import { ResidenciasController } from './residencias.controller';
 import { ResidenciasService } from './residencias.service';
 import { residenciaSchema } from './schemas/residencia.schema';
+import { PublicacionesModule } from 'src/publicaciones/publicaciones.module';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
 	imports: [
@@ -13,6 +15,7 @@ import { residenciaSchema } from './schemas/residencia.schema';
 			collection: 'Residencias'
 		}]),
 		forwardRef( ( ) => SubastasModule ),
+		forwardRef( ( ) => PublicacionesModule )
 	],
 	exports: [
 		ResidenciasService,

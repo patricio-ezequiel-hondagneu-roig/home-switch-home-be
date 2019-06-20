@@ -3,9 +3,9 @@ import { Response } from 'express';
 import { Types } from 'mongoose';
 import { ObjectIdPipe } from '../helpers/validadores/ObjectIdPipe';
 import { CrearResidenciaDTO } from './dto/crear-residencia.dto';
-import { ResidenciasService } from './residencias.service';
 import { ModificarResidenciaDTO } from './dto/modificar-residencia.dto';
 import { Residencia } from './interfaces/residencia.interface';
+import { ResidenciasService } from './residencias.service';
 
 @Controller( '/residencias' )
 export class ResidenciasController {

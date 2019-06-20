@@ -1,7 +1,8 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { PublicacionesService } from './publicaciones.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { publicacionSchema } from './schemas/publicacion.schema';
+import { ResidenciasModule } from 'src/residencias/residencias.module';
 
 @Module({
 	imports: [
@@ -9,7 +10,8 @@ import { publicacionSchema } from './schemas/publicacion.schema';
 			name: 'Publicacion',
 			schema: publicacionSchema,
 			collection: 'Publicaciones',
-		}])
+		}]),
+		forwardRef( ( ) => ResidenciasModule ),
 	],
 	exports: [
 		PublicacionesService,

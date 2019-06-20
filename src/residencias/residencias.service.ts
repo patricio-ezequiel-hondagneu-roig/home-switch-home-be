@@ -6,7 +6,6 @@ import { SubastasService } from '../subastas/subastas.service';
 import { CrearResidenciaDTO } from './dto/crear-residencia.dto';
 import { Residencia } from './interfaces/residencia.interface';
 import { ModificarResidenciaDTO } from './dto/modificar-residencia.dto';
-import { ModuleRef } from '@nestjs/core';
 
 /**
  * Servicio que administra las operaciones sobre residencias en la base de datos.
