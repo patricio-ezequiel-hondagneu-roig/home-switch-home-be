@@ -63,10 +63,10 @@ export class PublicacionesService {
 			);
 		}
 
-		if ( ! publicacion.estaEnSubasta && modificarPublicacionDTO.estaEnSubasta ) {
+		if ( publicacion.cerroSubasta && ! modificarPublicacionDTO.cerroSubasta ) {
 			throw new BadRequestException( `No se puede volver a subastar una publicación cuya subasta finalizó.` );
 		}
-		else if ( publicacion.estaEnSubasta && ! modificarPublicacionDTO.estaEnSubasta ) {
+		else if ( ! publicacion.cerroSubasta && modificarPublicacionDTO.cerroSubasta ) {
 			await this.cerrarSubasta( publicacion );
 		}
 

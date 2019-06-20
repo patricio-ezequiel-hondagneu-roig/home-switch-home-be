@@ -5,5 +5,5 @@ export interface Publicacion extends Document {
 	readonly idResidencia: Types.ObjectId;
 	readonly montoInicialDeSubasta: number;
 	readonly fechaDeInicioDeSemana: string;
-	readonly estaEnSubasta: boolean;
+	readonly cerroSubasta: boolean;
 }

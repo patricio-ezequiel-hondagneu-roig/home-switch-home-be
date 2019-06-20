@@ -23,8 +23,8 @@ export const publicacionSchema = new Schema({
 		type: Schema.Types.String,
 		required: [ true, 'El campo fechaDeInicioDeSemana es requerido.' ],
 	},
-	estaEnSubasta: {
+	cerroSubasta: {
 		type: Schema.Types.Boolean,
-		required: [ true, 'El campo estaEnSubasta es requerido.' ],
+		required: [ true, 'El campo cerroSubasta es requerido.' ],
 	},
 });
