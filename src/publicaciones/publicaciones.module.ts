@@ -3,6 +3,7 @@ import { PublicacionesService } from './publicaciones.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { publicacionSchema } from './schemas/publicacion.schema';
 import { ResidenciasModule } from 'src/residencias/residencias.module';
+import { PublicacionesController } from './publicaciones.controller';
 
 @Module({
 	imports: [
@@ -15,6 +16,9 @@ import { ResidenciasModule } from 'src/residencias/residencias.module';
 	],
 	exports: [
 		PublicacionesService,
+	],
+	controllers: [
+		PublicacionesController,
 	],
 	providers: [
 		PublicacionesService,
