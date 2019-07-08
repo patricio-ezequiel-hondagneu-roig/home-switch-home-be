@@ -8,6 +8,7 @@ import { PublicacionesModule as PublicacionesModule } from './publicaciones/publ
 import { ClientesModule } from './clientes/clientes.module';
 import { SolicitudesModule } from './solicitudes/solicitudes.module';
 import { AuthModule } from './auth/auth.module';
+import { AdquisicionesModule } from './adquisiciones/adquisiciones.module';
 
 @Module({
 	imports: [
@@ -19,6 +20,7 @@ import { AuthModule } from './auth/auth.module';
 		PublicacionesModule,
 		ClientesModule,
 		SolicitudesModule,
+		AdquisicionesModule,
 		AuthModule
 	],
 })

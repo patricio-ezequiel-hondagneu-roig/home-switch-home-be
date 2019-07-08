@@ -28,9 +28,9 @@ export const adquisicionSchema = new Schema({
 		type:  String,
 		required: [ true, 'El campo fechaDeCreacion es requerido.' ],
 	},
-	tipoDeSuscripcion: {
+	tipoDeAdquisicion: {
 		type:  String,
-		required: [ true, 'El campo tipoDeSuscripcion es requerido.' ],
+		required: [ true, 'El campo tipoDeAdquisicion es requerido.' ],
 		validate: {
 			validator: ( value: string ): boolean => {
 				return ( value === TipoDeAdquisicion.ReservaDirecta ) ||

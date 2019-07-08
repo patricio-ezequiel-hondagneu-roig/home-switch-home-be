@@ -1,100 +1,90 @@
-import { BadRequestException, forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, NotFoundException, UnprocessableEntityException, BadRequestException, ConflictException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { ObjectIdPipe } from 'src/helpers/validadores/ObjectIdPipe';
 import { CrearAdquisicionDTO } from './dto/crear-adquisicion.dto';
-import { ModificarPublicacionDTO } from './dto/modificar-publicacion.dto';
-import { Publicacion } from './interfaces/publicacion.interface';
+import { Adquisicion } from './interfaces/adquisicion.interface';
+import { ModificarAdquisicionDTO } from './dto/modificar-adquisicion.dto';
 
+/**
+ * Servicio que administra las operaciones sobre adquisiciones en la base de datos.
+ */
 @Injectable( )
 export class AdquisicionesService {
 
 	public constructor(
-		@InjectModel( 'Publicacion' )
-		private readonly publicacionModel: Model<Publicacion>,
-		@Inject( forwardRef( ( ) => ResidenciasService ) )
-		private readonly residenciasService: ResidenciasService,
+		@InjectModel( 'Adquisicion' )
+		private readonly adquisicionModel: Model<Adquisicion>
 	) { }
 
-	public async obtenerTodas( ): Promise<Publicacion[ ]> {
-		return this.publicacionModel.find( ).exec( );
+	/**
+	 * Retorna todas las Adquisiciones.
+	 */
+	public async obtenerTodas( ): Promise<Adquisicion[ ]> {
+		return this.adquisicionModel.find( ).exec( );
 	}
 
-	public async obtenerPorId( idPublicacion: Types.ObjectId ): Promise<Publicacion> {
-		const publicacion = await this.publicacionModel.findById( idPublicacion ).exec( );
+	/**
+	 * Retorna la Adquisicion con el ID provisto.
+	 *
+	 * @param idAdquisicion ID de la Adquisicion a obtener.
+	 *
+	 * @throws {NotFoundException} - No existen Adquisiciones con el ID provisto.
+	 */
+	public async obtenerPorId( idAdquisicion: Types.ObjectId ): Promise<Adquisicion> {
+		const adquisicion = await this.adquisicionModel.findById( idAdquisicion ).exec( );
 
-		if ( publicacion !== null ) {
-			return publicacion;
+		if ( adquisicion !== null ) {
+			return adquisicion;
 		}
 		else {
-			throw new NotFoundException( `No existen publicaciones con idPublicacion "${ idPublicacion }".` );
+			throw new NotFoundException( `No existen adquisiciones con idAdquisicion "${ idAdquisicion }".` );
 		}
 	}
 
-	public async agregar( crearPublicacionDTO: CrearPublicacionDTO ): Promise<Publicacion> {
-		const idResidencia = await ObjectIdPipe.transform( crearPublicacionDTO.idResidencia );
-		const residencia = await this.residenciasService.obtenerPorId( idResidencia );
-
-		if ( crearPublicacionDTO.montoInicialDeSubasta < residencia.montoInicialDeSubasta ) {
-			throw new BadRequestException(
-				`No se puede crear la publicacion porque el monto inicial de subasta provisto ` +
-				`(${ crearPublicacionDTO.montoInicialDeSubasta }) es inferior al monto mínimo ` +
-				`permitido (${ residencia.montoInicialDeSubasta }).`
-			);
-		}
-
-		const publicacionAgregada = new this.publicacionModel( crearPublicacionDTO ).save( );
-		return publicacionAgregada;
+	/**
+	 * Agrega una Adquisicion de acuerdo al DTO provisto, y la retorna.
+	 *
+	 * @param crearAdquisicionDTO DTO para agregar la Adquisicion.
+	 */
+	public async agregar( crearAdquisicionDTO: CrearAdquisicionDTO ): Promise<Adquisicion> {
+		const adquisicionAgregada = new this.adquisicionModel( crearAdquisicionDTO ).save( );
+		return adquisicionAgregada;
 	}
 
+	/**
+	 * Modifica la Adquisicion con el ID provisto de acuerdo al DTO provisto, y la retorna.
+	 *
+	 * @param idAdquisicion ID de la Adquisicion a modificar
+	 * @param modificarAdquisicionDTO DTO para modificar la Adquisicion
+	 *
+	 * @throws {NotFoundException} - No existen Adquisiciones con el ID provisto.
+	 */
 	public async modificar(
-		idPublicacion: Types.ObjectId,
-		modificarPublicacionDTO: ModificarPublicacionDTO
-	): Promise<Publicacion> {
-		const publicacion = await this.obtenerPorId( idPublicacion );
-		const residencia = await this.residenciasService.obtenerPorId( publicacion.idResidencia );
-
-		if ( modificarPublicacionDTO.montoInicialDeSubasta < residencia.montoInicialDeSubasta ) {
-			throw new BadRequestException(
-				`No se puede modificar la publicación porque el monto inicial de subasta provisto ` +
-				`(${ modificarPublicacionDTO.montoInicialDeSubasta }) es inferior al monto mínimo ` +
-				`permitido (${ residencia.montoInicialDeSubasta }).`
-			);
-		}
-
-		if ( publicacion.cerroSubasta && ! modificarPublicacionDTO.cerroSubasta ) {
-			throw new BadRequestException( `No se puede volver a subastar una publicación cuya subasta finalizó.` );
-		}
-		else if ( ! publicacion.cerroSubasta && modificarPublicacionDTO.cerroSubasta ) {
-			await this.cerrarSubasta( publicacion );
-		}
-
-		const publicacionModificada = await this.publicacionModel
-			.findByIdAndUpdate( idPublicacion, modificarPublicacionDTO, { new: true } )
+		idAdquisicion: Types.ObjectId,
+		modificarAdquisicionDTO: ModificarAdquisicionDTO
+	): Promise<Adquisicion> {
+		const adquisicionModificada = await this.adquisicionModel
+			.findByIdAndUpdate( idAdquisicion, modificarAdquisicionDTO, { new: true } )
 			.exec( );
 
-		if ( publicacionModificada !== null ) {
-			return publicacionModificada;
+		if ( adquisicionModificada !== null ) {
+			return adquisicionModificada;
 		}
 		else {
-			throw new NotFoundException( `No existe ninguna publicación con el ID "${ idPublicacion }"` );
+			throw new NotFoundException(
+				`No existe ninguna adquisicion con el ID "${ idAdquisicion }"`
+			);
 		}
 	}
 
-	public async eliminar( idPublicacion: Types.ObjectId ): Promise<Publicacion | null> {
-		return this.publicacionModel.findByIdAndRemove( idPublicacion ).exec( );
+	/**
+	 * Elimina la Adquisicion con el ID provisto y la retorna.
+	 *
+	 * Si no existía ninguna Adquisicion con el ID provisto, retorna null.
+	 *
+	 * @param idAdquisicion ID de la Adquisicion a eliminar.
+	 */
+	public async eliminar( idAdquisicion: Types.ObjectId ): Promise<Adquisicion | null> {
+		return this.adquisicionModel.findByIdAndRemove( idAdquisicion ).exec( );
 	}
-
-	public async obtenerPorIdResidencia( idResidencia: Types.ObjectId ): Promise<Publicacion[ ]> {
-		return this.publicacionModel
-			.find({
-				idResidencia: idResidencia,
-			})
-			.exec( );
-	}
-
-	private async cerrarSubasta( publicacion: Publicacion ): Promise<void> {
-		// TODO: Calcular ganador de la subasta, y crear adquisición en caso de que haya uno
-	}
-
 }

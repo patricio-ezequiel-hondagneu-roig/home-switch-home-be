@@ -5,6 +5,7 @@ import { ObjectIdPipe } from '../helpers/validadores/ObjectIdPipe';
 import { CrearAdquisicionDTO } from './dto/crear-adquisicion.dto';
 import { Adquisicion } from './interfaces/adquisicion.interface';
 import { AdquisicionesService } from './adquisiciones.service';
+import { ModificarAdquisicionDTO } from './dto/modificar-adquisicion.dto';
 
 @Controller( '/adquisiciones' )
 export class AdquisicionesController {
@@ -30,7 +31,6 @@ export class AdquisicionesController {
 		return respuesta.status( HttpStatus.OK ).json( adquisicionObtenida );
 	}
 
-	// ----------------------------------------------------------------------------------------------------------------
 	@Post( '/' )
 	public async agregarAdquisicion(
 		@Res( ) respuesta: Response,
@@ -38,6 +38,19 @@ export class AdquisicionesController {
 	): Promise<Response> {
 		const adquisicionAgregada: Adquisicion = await this.adquisicionesService.agregar( crearAdquisicionDTO );
 		return respuesta.status( HttpStatus.CREATED ).json( adquisicionAgregada );
+	}
+
+	@Put( '/:idAdquisicion' )
+	public async modificarAdquisicion(
+		@Res( ) respuesta: Response,
+		@Param( 'idAdquisicion', new ObjectIdPipe( ) ) idAdquisicion: Types.ObjectId,
+		@Body( ) modificarAdquisicionDTO: ModificarAdquisicionDTO
+	): Promise<Response> {
+		const adquisicionModificada: Adquisicion = await this.adquisicionesService.modificar(
+			idAdquisicion,
+			modificarAdquisicionDTO
+		);
+		return respuesta.status( HttpStatus.OK ).json( adquisicionModificada );
 	}
 
 	@Delete( '/:idAdquisicion' )
