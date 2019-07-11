@@ -1,6 +1,6 @@
 import { Document, Types } from 'mongoose';
 
-export interface Credito extends Document {
+export interface CreditoBD extends Document {
 	readonly fechaDeCreacion: string;
-	readonly activo: boolean;
+	readonly monto: number;
 }
