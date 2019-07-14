@@ -3,6 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AdquisicionesController } from './adquisiciones.controller';
 import { AdquisicionesService } from './adquisiciones.service';
 import { adquisicionSchema } from './schemas/adquisicion.schema';
+import { PublicacionesModule } from 'src/publicaciones/publicaciones.module';
 
 @Module({
 	imports: [
@@ -11,6 +12,7 @@ import { adquisicionSchema } from './schemas/adquisicion.schema';
 			schema: adquisicionSchema,
 			collection: 'Adquisiciones'
 		}]),
+		forwardRef( ( ) => PublicacionesModule ),
 	],
 	exports: [
 		AdquisicionesService,

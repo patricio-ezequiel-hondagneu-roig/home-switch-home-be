@@ -6,6 +6,7 @@ import { ResidenciasService } from 'src/residencias/residencias.service';
 import { CrearPublicacionDTO } from './dto/crear-publicacion.dto';
 import { ModificarPublicacionDTO } from './dto/modificar-publicacion.dto';
 import { Publicacion } from './interfaces/publicacion.interface';
+import { AdquisicionesService } from 'src/adquisiciones/adquisiciones.service';
 
 @Injectable( )
 export class PublicacionesService {
@@ -15,6 +16,8 @@ export class PublicacionesService {
 		private readonly publicacionModel: Model<Publicacion>,
 		@Inject( forwardRef( ( ) => ResidenciasService ) )
 		private readonly residenciasService: ResidenciasService,
+		@Inject( forwardRef( ( ) => AdquisicionesService ) )
+		private readonly adquisicionesService: AdquisicionesService,
 	) { }
 
 	public async obtenerTodas( ): Promise<Publicacion[ ]> {

@@ -4,6 +4,9 @@ import { Model, Types } from 'mongoose';
 import { CrearAdquisicionDTO } from './dto/crear-adquisicion.dto';
 import { Adquisicion } from './interfaces/adquisicion.interface';
 import { ModificarAdquisicionDTO } from './dto/modificar-adquisicion.dto';
+import { Publicacion } from 'src/publicaciones/interfaces/publicacion.interface';
+import { PublicacionesService } from 'src/publicaciones/publicaciones.service';
+import * as moment from 'moment';
 
 /**
  * Servicio que administra las operaciones sobre adquisiciones en la base de datos.
@@ -13,7 +16,9 @@ export class AdquisicionesService {
 
 	public constructor(
 		@InjectModel( 'Adquisicion' )
-		private readonly adquisicionModel: Model<Adquisicion>
+		private readonly adquisicionModel: Model<Adquisicion>,
+		@Inject( forwardRef( ( ) => PublicacionesService ) )
+		private readonly publicacionesService: PublicacionesService,
 	) { }
 
 	/**
@@ -97,9 +102,25 @@ export class AdquisicionesService {
 	 *
 	 * Si no existía ninguna Adquisicion con el ID provisto, retorna null.
 	 *
+	 * Si la adquisición que se intenta retornar ya está finalizada, arroja una excepción.
+	 *
 	 * @param idAdquisicion ID de la Adquisicion a eliminar.
 	 */
 	public async eliminar( idAdquisicion: Types.ObjectId ): Promise<Adquisicion | null> {
+		const adquisicion: Adquisicion | null = await this.adquisicionModel.findById( idAdquisicion ).exec( );
+
+		if ( adquisicion === null ) {
+			return Promise.resolve( null );
+		}
+
+		const publicacion: Publicacion = await this.publicacionesService.obtenerPorId( adquisicion.idPublicacion );
+		// tslint:disable-next-line: no-magic-numbers
+		const fechaDeFinDePublicacion = moment( publicacion.fechaDeInicioDeSemana ).add( 7, 'days' );
+
+		if ( fechaDeFinDePublicacion < moment( ) ) {
+			throw new ConflictException( 'No se pudo eliminar la adquisición porque la publicación ya finalizó' );
+		}
+
 		return this.adquisicionModel.findByIdAndRemove( idAdquisicion ).exec( );
 	}
 }

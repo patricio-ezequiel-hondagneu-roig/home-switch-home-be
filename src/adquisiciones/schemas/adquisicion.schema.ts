@@ -1,5 +1,5 @@
 import { Schema, Types } from 'mongoose';
-import { TipoDeAdquisicion } from './tipoDeAdquisicion.enum';
+import { TipoDeAdquisicion } from '../enums/tipoDeAdquisicion.enum';
 
 export const adquisicionSchema = new Schema({
 	idCliente: {
