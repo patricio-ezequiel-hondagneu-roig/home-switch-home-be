@@ -8,7 +8,7 @@ export const hotsaleSchema = new Schema({
 				return Types.ObjectId.isValid( value );
 			}
 		},
-		required: [ true, 'El campo idCliente es requerido.' ],
+		required: [ true, 'El campo idPublicacion es requerido.' ],
 	},
 	fechaDeInicio: {
 		type:  String,
