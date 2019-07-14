@@ -22,6 +22,15 @@ export class AdquisicionesController {
 		return respuesta.status( HttpStatus.OK ).json( adquisiciones );
 	}
 
+	@Get( '/cliente/:idCliente' )
+	public async obtenerAdquisicionesPorIdCliente(
+		@Res( ) respuesta: Response,
+		@Param( 'idCliente', new ObjectIdPipe( ) ) idCliente: Types.ObjectId,
+	): Promise<Response> {
+		const adquisiciones: Adquisicion[ ] = await this.adquisicionesService.obtenerPorIdCliente( idCliente );
+		return respuesta.status( HttpStatus.OK ).json( adquisiciones );
+	}
+
 	@Get( '/:idAdquisicion' )
 	public async obtenerAdquisicionPorId(
 		@Res( ) respuesta: Response,

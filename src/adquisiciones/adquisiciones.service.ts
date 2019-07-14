@@ -42,6 +42,21 @@ export class AdquisicionesService {
 	}
 
 	/**
+	 * Retorna las adquisiciones asociadas a un ID de cliente provisto.
+	 *
+	 * @param idCliente ID de cliente asociado a las adquisiciones a obtener.
+	 */
+	public async obtenerPorIdCliente( idCliente: Types.ObjectId ): Promise<Adquisicion[ ]> {
+		const adquisiciones = await this.adquisicionModel
+			.find({
+				idCliente: idCliente
+			})
+			.exec( );
+
+		return adquisiciones;
+	}
+
+	/**
 	 * Agrega una Adquisicion de acuerdo al DTO provisto, y la retorna.
 	 *
 	 * @param crearAdquisicionDTO DTO para agregar la Adquisicion.
