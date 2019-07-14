@@ -10,6 +10,7 @@ import { SolicitudesModule } from './solicitudes/solicitudes.module';
 import { AuthModule } from './auth/auth.module';
 import { AdquisicionesModule } from './adquisiciones/adquisiciones.module';
 import { CreditosModule } from './creditos/creditos.module';
+import { HotsalesModule } from './hotsales/hotsales.module';
 
 @Module({
 	imports: [
@@ -23,6 +24,7 @@ import { CreditosModule } from './creditos/creditos.module';
 		SolicitudesModule,
 		AdquisicionesModule,
 		CreditosModule,
+		HotsalesModule,
 		AuthModule
 	],
 })
