@@ -4,6 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { publicacionSchema } from './schemas/publicacion.schema';
 import { ResidenciasModule } from 'src/residencias/residencias.module';
 import { PublicacionesController } from './publicaciones.controller';
+import { AdquisicionesModule } from 'src/adquisiciones/adquisiciones.module';
 
 @Module({
 	imports: [
@@ -13,6 +14,7 @@ import { PublicacionesController } from './publicaciones.controller';
 			collection: 'Publicaciones',
 		}]),
 		forwardRef( ( ) => ResidenciasModule ),
+		forwardRef( ( ) => AdquisicionesModule ),
 	],
 	exports: [
 		PublicacionesService,
