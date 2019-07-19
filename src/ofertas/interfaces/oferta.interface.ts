@@ -1,7 +1,9 @@
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
 
 export interface Oferta extends Document {
-	email: string;
-	tarjeta: string;
-	monto: number;
+	readonly _id: Types.ObjectId;
+	readonly idCliente: Types.ObjectId;
+	readonly idPublicacion: Types.ObjectId;
+	readonly monto: number;
+	readonly fechaDeCreacion: string;
 }

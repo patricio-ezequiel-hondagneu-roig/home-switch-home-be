@@ -1,7 +1,30 @@
-import { Schema } from 'mongoose';
+import { Schema, Types } from 'mongoose';
 
 export const ofertaSchema = new Schema({
-	email: String,
-	tarjeta: String,
-	monto: Number,
+	idCliente: {
+		type: Schema.Types.ObjectId,
+		validate: {
+			validator: ( value: string ): boolean => {
+				return Types.ObjectId.isValid( value );
+			}
+		},
+		required: [ true, 'El campo idCliente es requerido.' ],
+	},
+	idPublicacion: {
+		type: Schema.Types.ObjectId,
+		validate: {
+			validator: ( value: string ): boolean => {
+				return Types.ObjectId.isValid( value );
+			}
+		},
+		required: [ true, 'El campo idPublicacion es requerido.' ],
+	},
+	monto: {
+		type:  Number,
+		required: [ true, 'El campo monto es requerido.' ],
+	},
+	fechaDeCreacion: {
+		type:  String,
+		required: [ true, 'El campo fechaDeCreacion es requerido.' ],
+	},
 });
