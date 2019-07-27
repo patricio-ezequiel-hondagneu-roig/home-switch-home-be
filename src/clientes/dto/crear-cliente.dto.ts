@@ -2,6 +2,7 @@ import { Credito } from 'src/creditos/interfaces/credito.interface';
 
 export class CrearClienteDTO {
 	public readonly idSuscripcion!: string;
+	public readonly esAdmin!: boolean;
 	public readonly nombre!: string;
 	public readonly apellido!: string;
 	public readonly email!: string;

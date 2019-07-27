@@ -4,6 +4,7 @@ import { Credito } from 'src/creditos/interfaces/credito.interface';
 export interface Cliente extends Document {
 	readonly _id: Types.ObjectId;
 	readonly idSuscripcion: string;
+	readonly esAdmin: boolean;
 	readonly nombre: string;
 	readonly apellido: string;
 	readonly email: string;

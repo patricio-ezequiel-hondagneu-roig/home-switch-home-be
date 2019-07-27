@@ -140,5 +140,12 @@ export class ClientesService {
 			})
 			.exec( );
 	}
+	public async obtenerAdmins(): Promise<Cliente[ ]> {
+		return this.clienteModel
+			.find({
+				esAdmin: true
+			})
+			.exec( );
+	}
 
 }

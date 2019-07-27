@@ -13,7 +13,13 @@ export class ClientesController {
 	public constructor(
 		private readonly clientesService: ClientesService,
 	) { }
-
+	@Get( '/admins' )
+	public async obtenerClientesAdmins(
+		@Res( ) respuesta: Response
+	): Promise<Response> {
+		const admins: Cliente[ ] = await this.clientesService.obtenerAdmins( );
+		return respuesta.status( HttpStatus.OK ).json( admins );
+	}
 	@Get( '/' )
 	public async obtenerClientes(
 		@Res( ) respuesta: Response
