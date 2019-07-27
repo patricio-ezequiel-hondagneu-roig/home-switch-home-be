@@ -3,7 +3,7 @@
 	"version": "0.1.0",
 	"private": true,
 	"scripts": {
-		"ejecutar server": "ts-node -r tsconfig-paths/register src/main.ts",
+		"ejecutar server": "nodemon",
 		"instalar dependencias": "npm install",
 		"linter": "tslint --fix -p tsconfig.json -c tslint.json",
 		"pruebas unitarias": "jest",

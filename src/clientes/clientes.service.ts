@@ -6,6 +6,7 @@ import { Cliente } from './interfaces/cliente.interface';
 import { ModificarClienteDTO } from './dto/modificar-cliente.dto';
 import { ModuleRef } from '@nestjs/core';
 import { ObjectIdPipe } from 'src/helpers/validadores/ObjectIdPipe';
+import { SubastasService } from 'src/subastas/subastas.service';
 
 /**
  * Servicio que administra las operaciones sobre los clientes en la base de datos.
@@ -15,7 +16,9 @@ export class ClientesService {
 
 	public constructor(
 		@InjectModel( 'Cliente' )
-		private readonly clienteModel: Model<Cliente>
+		private readonly clienteModel: Model<Cliente>,
+		@Inject( forwardRef( ( ) => SubastasService ) )
+		private readonly subastasService: SubastasService,
 	) { }
 
 	/**
