@@ -5,6 +5,8 @@ import { publicacionSchema } from './schemas/publicacion.schema';
 import { ResidenciasModule } from 'src/residencias/residencias.module';
 import { PublicacionesController } from './publicaciones.controller';
 import { AdquisicionesModule } from 'src/adquisiciones/adquisiciones.module';
+import { SubastasModule } from 'src/subastas/subastas.module';
+import { OfertasModule } from 'src/ofertas/ofertas.module';
 
 @Module({
 	imports: [
@@ -13,8 +15,10 @@ import { AdquisicionesModule } from 'src/adquisiciones/adquisiciones.module';
 			schema: publicacionSchema,
 			collection: 'Publicaciones',
 		}]),
+		forwardRef( ( ) => SubastasModule ),
 		forwardRef( ( ) => ResidenciasModule ),
 		forwardRef( ( ) => AdquisicionesModule ),
+		forwardRef( ( ) => OfertasModule ),
 	],
 	exports: [
 		PublicacionesService,

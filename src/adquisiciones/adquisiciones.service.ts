@@ -115,9 +115,9 @@ export class AdquisicionesService {
 
 		const publicacion: Publicacion = await this.publicacionesService.obtenerPorId( adquisicion.idPublicacion );
 		// tslint:disable-next-line: no-magic-numbers
-		const fechaDeFinDePublicacion = moment( publicacion.fechaDeInicioDeSemana ).add( 7, 'days' );
+		const fechaDeFinDePublicacion = moment.utc( publicacion.fechaDeInicioDeSemana ).add({ days: 7 });
 
-		if ( fechaDeFinDePublicacion < moment( ) ) {
+		if ( fechaDeFinDePublicacion < moment.utc( ) ) {
 			throw new ConflictException( 'No se pudo eliminar la adquisición porque la publicación ya finalizó' );
 		}
 
