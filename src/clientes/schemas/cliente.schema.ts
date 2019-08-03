@@ -11,6 +11,10 @@ export const clienteSchema = new Schema({
 		},
 		required: [ true, 'El campo idSuscripcion es requerido.' ],
 	},
+	esAdmin: {
+		type:  Boolean,
+		required: [ true, 'El campo esAdmin es requerido.' ],
+	},
 	nombre: {
 		type:  String,
 		required: [ true, 'El campo nombre es requerido.' ],
