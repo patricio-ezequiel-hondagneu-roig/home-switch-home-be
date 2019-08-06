@@ -4,6 +4,7 @@ import { ClientesController } from './clientes.controller';
 import { ClientesService } from './clientes.service';
 import { clienteSchema } from './schemas/cliente.schema';
 import { SubastasModule } from 'src/subastas/subastas.module';
+import { PublicacionesModule } from 'src/publicaciones/publicaciones.module';
 
 @Module({
 	imports: [

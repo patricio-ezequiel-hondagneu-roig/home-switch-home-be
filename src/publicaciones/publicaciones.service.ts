@@ -186,7 +186,7 @@ export class PublicacionesService {
 
 				if ( cliente === null ) { continue; }
 
-				const creditosActivos: Credito[ ] = cliente.creditos.filter( _credito => {
+				const creditosActivos: Credito[ ] = cliente.creditos.filter( (_credito) => {
 					const finDeCredito = moment.utc( _credito.fechaDeCreacion ).add({ years: 1 });
 					return fechaActual.isBefore( finDeCredito );
 				});

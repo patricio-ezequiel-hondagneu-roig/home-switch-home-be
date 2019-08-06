@@ -53,6 +53,16 @@ export class PublicacionesController {
 		return respuesta.status( HttpStatus.OK ).json( publicacionModificada );
 	}
 
+	@Put( '/:idSubasta/finalizar' )
+	public async cerrarSubasta(
+		@Res( ) respuesta: Response,
+		@Param( 'idSubasta', new ObjectIdPipe( ) ) idSubasta: Types.ObjectId
+	): Promise<Response> {
+		const publicacion: Publicacion = await this.publicacionesService.obtenerPorId( idSubasta );
+		await this.publicacionesService.cerrarSubasta( publicacion );
+		return respuesta.status( HttpStatus.OK );
+	}
+
 	@Delete( '/:idPublicacion' )
 	public async eliminarPublicacion(
 		@Res( ) respuesta: Response,
