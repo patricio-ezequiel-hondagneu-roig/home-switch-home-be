@@ -62,6 +62,21 @@ export class AdquisicionesService {
 	}
 
 	/**
+	 * Retorna la adquisición asociada a un ID de publicaciòn provistom o _null_ en caso de que no exista ninguna.
+	 *
+	 * @param idPublicacion ID de publicaciòn asociado a la adquisición a obtener
+	 */
+	public async obtenerPorIdPublicacion( idPublicacion: Types.ObjectId ): Promise<Adquisicion | null> {
+		const adquisicion: Adquisicion | null  = await this.adquisicionModel
+			.findOne({
+				idPublicacion: idPublicacion
+			})
+			.exec( );
+
+		return adquisicion;
+	}
+
+	/**
 	 * Agrega una Adquisicion de acuerdo al DTO provisto, y la retorna.
 	 *
 	 * @param crearAdquisicionDTO DTO para agregar la Adquisicion.

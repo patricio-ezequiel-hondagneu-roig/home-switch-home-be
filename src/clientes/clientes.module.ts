@@ -13,6 +13,7 @@ import { SubastasModule } from 'src/subastas/subastas.module';
 			collection: 'Clientes'
 		}]),
 		forwardRef( ( ) => SubastasModule ),
+		forwardRef( ( ) => PublicacionesModule ),
 	],
 	exports: [
 		ClientesService,

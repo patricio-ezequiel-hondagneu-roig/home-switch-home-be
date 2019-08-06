@@ -7,6 +7,7 @@ import { PublicacionesController } from './publicaciones.controller';
 import { AdquisicionesModule } from 'src/adquisiciones/adquisiciones.module';
 import { SubastasModule } from 'src/subastas/subastas.module';
 import { OfertasModule } from 'src/ofertas/ofertas.module';
+import { ClientesModule } from 'src/clientes/clientes.module';
 
 @Module({
 	imports: [
@@ -19,6 +20,7 @@ import { OfertasModule } from 'src/ofertas/ofertas.module';
 		forwardRef( ( ) => ResidenciasModule ),
 		forwardRef( ( ) => AdquisicionesModule ),
 		forwardRef( ( ) => OfertasModule ),
+		forwardRef( ( ) => ClientesModule ),
 	],
 	exports: [
 		PublicacionesService,

@@ -31,6 +31,12 @@ export class OfertasService {
 		}
 	}
 
+	public async obtenerPorIdPublicacion( idPublicacion: Types.ObjectId ): Promise<Oferta[ ]> {
+		return this.ofertaModel.find({
+			idPublicacion: idPublicacion
+		});
+	}
+
 	public async agregar( crearOfertaDTO: CrearOfertaDTO ): Promise<Oferta> {
 		const ofertaAgregada = new this.ofertaModel( crearOfertaDTO ).save( );
 		return ofertaAgregada;
